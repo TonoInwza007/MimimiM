@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Favorite Books - คลังหนังสือในใจ</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@300;400;500;600&family=Charm:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- CSS Reset & Variables --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-color: #FAF6F0; /* สีครีมละมุน */
+            --card-bg: #FFFFFF;
+            --text-main: #4A3E3D;
+            --text-muted: #8A7A78;
+            --accent-pink: #FBC5C5; /* ชมพูพาสเทล */
+            --accent-mint: #E8F9FD; /* เขียวมิ้นต์พาสเทล */
+            --accent-lavender: #E8E4F6; /* ม่วงลาเวนเดอร์ */
+            --star-color: #FFD23F;
+            --shadow: 0 8px 24px rgba(168, 152, 144, 0.15);
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Anuphan', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 2rem 1rem;
+        }
+
+        /* --- Header --- */
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        header h1 {
+            font-family: 'Charm', cursive;
+            font-size: 3rem;
+            color: #6D5D5C;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            font-weight: 300;
+        }
+
+        /* --- Container & Grid --- */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .book-grid {
+            display: grid;
+            grid-template-columns: 1fr; /* Default สำหรับมือถือ */
+            gap: 2.5rem;
+        }
+
+        /* --- Book Card --- */
+        .book-card {
+            background-color: var(--card-bg);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition);
+            border: 1px solid rgba(230, 220, 215, 0.5);
+        }
+
+        .book-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(168, 152, 144, 0.25);
+        }
+
+        /* ตกแต่งสีขอบบนการ์ดแต่ละใบให้สลับสีพาสเทล */
+        .book-card:nth-child(1) { border-top: 8px solid var(--accent-pink); }
+        .book-card:nth-child(2) { border-top: 8px solid var(--accent-mint); }
+        .book-card:nth-child(3) { border-top: 8px solid var(--accent-lavender); }
+        .book-card:nth-child(4) { border-top: 8px solid #FFE4C4; } /* สีเบจเข้ม */
+
+        .book-info-wrapper {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        /* Cover Image Placeholder */
+        .book-cover {
+            width: 200px;
+            height: 280px;
+            background-color: #F3EFE9;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            border: 1px solid rgba(0,0,0,0.03);
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            position: relative;
+        }
+        
+        .book-cover::before {
+            content: "📖";
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .book-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.4rem;
+            color: var(--text-main);
+        }
+
+        .book-author {
+            font-size: 1rem;
+            color: var(--text-muted);
+            margin-bottom: 0.8rem;
+        }
+
+        /* Star Rating */
+        .rating {
+            margin-bottom: 1rem;
+        }
+
+        .star {
+            color: #E0E0E0; /* ดาวสีเทา (ไม่มีคะแนน) */
+            font-size: 1.4rem;
+            margin: 0 1px;
+        }
+
+        .star.filled {
+            color: var(--star-color); /* ดาวสีทอง */
+        }
+
+        /* --- Accordion (เรื่องย่อ) --- */
+        .accordion-btn {
+            width: 100%;
+            background: none;
+            border: none;
+            border-top: 1px solid #F3EFE9;
+            padding: 1rem 1.5rem;
+            font-family: 'Anuphan', sans-serif;
+            font-size: 1rem;
+            font-weight: 500;
+            color: #6D5D5C;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: var(--transition);
+        }
+
+        .accordion-btn:hover {
+            background-color: #FAF8F5;
+        }
+
+        .arrow-icon {
+            display: inline-block;
+            transition: transform 0.3s ease;
+            font-size: 0.8rem;
+        }
+
+        /* CSS สำหรับเปิด Accordion ด้วย CSS Grid-template-rows (Smooth Animation) */
+        .accordion-content {
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.3s ease-out;
+            background-color: #FAF8F5;
+        }
+
+        .accordion-inner {
+            overflow: hidden;
+            padding: 0 1.5rem;
+            font-size: 0.95rem;
+            color: #5A4E4D;
+            text-align: justify;
+        }
+
+        /* สถานะเปิด (Active) ที่จะใช้ JS มาสั่ง Toggle */
+        .book-card.active .accordion-content {
+            grid-template-rows: 1fr;
+        }
+
+        .book-card.active .accordion-inner {
+            padding: 1rem 1.5rem 1.5rem 1.5rem; /* เพิ่ม padding เมื่อเปิด */
+        }
+
+        .book-card.active .arrow-icon {
+            transform: rotate(180deg); /* หมุนลูกศรขึ้น */
+        }
+
+        /* --- Footer --- */
+        footer {
+            text-align: center;
+            margin-top: 4rem;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        /* --- Responsive Design (Desktop 2x2) --- */
+        @media (min-width: 768px) {
+            .book-grid {
+                grid-template-columns: repeat(2, 1fr); /* แสดงเป็น 2 คอลัมน์บนเดสก์ท็อป */
+                gap: 3rem;
+            }
+
+            .book-info-wrapper {
+                flex-direction: row;
+                text-align: left;
+                align-items: flex-start;
+                gap: 1.5rem;
+            }
+
+            .book-cover {
+                margin-bottom: 0;
+                flex-shrink: 0;
+            }
+
+            .book-details {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                height: 280px; /* ให้สูงเท่ากับปกเพื่อความสมดุล */
+            }
+
+            .accordion-btn {
+                padding: 1.2rem 2rem;
+            }
+
+            .book-card.active .accordion-inner {
+                padding: 1.2rem 2rem 2rem 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>My Cozy Library</h1>
+        <p>บันทึกหนังสือเล่มโปรดที่อ่านแล้วโอบอุ้มหัวใจ</p>
+    </header>
+
+    <main class="container">
+        <div class="book-grid">
+
+            <div class="book-card">
+                <div class="book-info-wrapper">
+                    <div class="book-cover"><span>Cover 1</span></div>
+                    <div class="book-details">
+                        <h2 class="book-title">ความสุขของกะทิ</h2>
+                        <p class="book-author">ผู้เขียน: งามพรรณ เวชชาชีวะ</p>
+                        <div class="rating" data-rating="5"></div> </div>
+                </div>
+                <button class="accordion-btn">
+                    <span>อ่านเรื่องย่อ</span>
+                    <span class="arrow-icon">▼</span>
+                </button>
+                <div class="accordion-content">
+                    <div class="accordion-inner">
+                        เรื่องราวของ "กะทิ" เด็กหญิงวัย 9 ขวบที่เติบโตมาด้วยความรักและดูแลเอาใจใส่จากตาและยาย ท่ามกลางวิถีชีวิตแบบไทย ๆ ที่สงบงาม แม้ว่าแม่ของเธอจะต้องแยกไปอยู่ห่างไกลเพราะอาการเจ็บป่วย วรรณกรรมเยาวชนที่สะท้อนความเข้าใจในชีวิต ความสูญเสีย และความหมายของความสุขที่แท้จริง
+                    </div>
+                </div>
+            </div>
+
+            <div class="book-card">
+                <div class="book-info-wrapper">
+                    <div class="book-cover"><span>Cover 2</span></div>
+                    <div class="book-details">
+                        <h2 class="book-title">โตเกียวเลิกฝัน</h2>
+                        <p class="book-author">ผู้เขียน: เพลงต้องห้าม</p>
+                        <div class="rating" data-rating="4"></div>
+                    </div>
+                </div>
+                <button class="accordion-btn">
+                    <span>อ่านเรื่องย่อ</span>
+                    <span class="arrow-icon">▼</span>
+                </button>
+                <div class="accordion-content">
+                    <div class="accordion-inner">
+                        ความเรียงและบันทึกการเดินทางที่ผสมผสานความเหงา ความหวัง และการเติบโตในเมืองหลวงใหญ่อย่างโตเกียว หนังสือเล่มนี้พัดพาผู้อ่านไปสัมผัสกับมุมมองของชีวิต ความฝันที่อาจต้องปล่อยมือ และการค้นพบชิ้นส่วนของตัวเองที่หล่นหายไปในเมืองที่เต็มไปด้วยแสงสีและผู้คนแปลกหน้า
+                    </div>
+                </div>
+            </div>
+
+            <div class="book-card">
+                <div class="book-info-wrapper">
+                    <div class="book-cover"><span>Cover 3</span></div>
+                    <div class="book-details">
+                        <h2 class="book-title">ร้านไม่สะดวกซื้อของคุณทกโก</h2>
+                        <p class="book-author">ผู้เขียน: คิมโฮยอน</p>
+                        <div class="rating" data-rating="5"></div>
+                    </div>
+                </div>
+                <button class="accordion-btn">
+                    <span>อ่านเรื่องย่อ</span>
+                    <span class="arrow-icon">▼</span>
+                </button>
+                <div class="accordion-content">
+                    <div class="accordion-inner">
+                        เรื่องราวที่เกิดขึ้นในร้านสะดวกซื้อเล็ก ๆ ในย่านชองพาดง ที่ได้ "ทกโก" ชายไร้บ้านผู้สูญเสียความทรงจำมาร่วมงานในฐานะพนักงานกะดึก บุคลิกที่ดูเงอะงะแต่เต็มไปด้วยความอบอุ่นของเขาได้เข้ามาเยียวยา หัวใจ และเปลี่ยนแปลงชีวิตของลูกค้าหลากประเภทที่แวะเวียนเข้ามาในร้านแห่งนี้อย่างปาฏิหาริย์
+                    </div>
+                </div>
+            </div>
+
+            <div class="book-card">
+                <div class="book-info-wrapper">
+                    <div class="book-cover"><span>Cover 4</span></div>
+                    <div class="book-details">
+                        <h2 class="book-title">เจ้าชายน้อย</h2>
+                        <p class="book-author">ผู้เขียน: อองตวน เดอ แซ็งแตกซูว์เปรี</p>
+                        <div class="rating" data-rating="4"></div>
+                    </div>
+                </div>
+                <button class="accordion-btn">
+                    <span>อ่านเรื่องย่อ</span>
+                    <span class="arrow-icon">▼</span>
+                </button>
+                <div class="accordion-content">
+                    <div class="accordion-inner">
+                        วรรณกรรมคลาสสิกระดับโลกที่บอกเล่าการเดินทางของเจ้าชายน้อยจากดาวบี 612 ผ่านมุมมองอันไร้เดียงสา ทว่าแฝงไปด้วยปรัชญาชีวิตลึกซึ้งเกี่ยวกับการมองเห็นคุณค่าของสิ่งต่าง ๆ ด้วยหัวใจ ไม่ใช่ด้วยดวงตา การผูกสัมพันธ์ ความรัก และความรับผิดชอบที่มนุษย์มีต่อกัน
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Cozy Book Club. Made with ❤️ for book lovers.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // 1. ฟังก์ชันสร้างไอคอนดาว (★) ตามคะแนนรีวิวที่กำหนดใน attribute 'data-rating'
+            const ratingContainers = document.querySelectorAll('.rating');
+            
+            ratingContainers.forEach(container => {
+                const rating = parseInt(container.getAttribute('data-rating')) || 0;
+                let starsHTML = '';
+                
+                for (let i = 1; i <= 5; i++) {
+                    if (i <= rating) {
+                        starsHTML += '<span class="star filled">★</span>'; // ดาวที่มีคะแนน
+                    } else {
+                        starsHTML += '<span class="star">★</span>'; // ดาวว่างเปล่า
+                    }
+                }
+                container.innerHTML = starsHTML;
+            });
+
+            // 2. ฟังก์ชัน Accordion สำหรับเปิด-ปิดเรื่องย่อเมื่อคลิกปุ่ม
+            const accordionButtons = document.querySelectorAll('.accordion-btn');
+
+            accordionButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const currentCard = button.parentElement;
+                    
+                    // ทริกเกอร์คลาส active เพื่อให้ CSS transition จัดการสไลด์เปิด-ปิด และหมุนลูกศร
+                    currentCard.classList.toggle('active');
+                    
+                    // (ออปชันเสริม) หากต้องการให้เปิดได้ทีละเล่ม (เมื่อเปิดเล่มใหม่ ให้ปิดเล่มเก่าอัตโนมัติ) 
+                    // สามารถเอาคอมเมนต์ด้านล่างนี้ออกได้ครับ:
+                    /*
+                    document.querySelectorAll('.book-card').forEach(card => {
+                        if (card !== currentCard) {
+                            card.classList.remove('active');
+                        }
+                    });
+                    */
+                });
+            });
+        });
+    </script>
+</body>
+</html>
