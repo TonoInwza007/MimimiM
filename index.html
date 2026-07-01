@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>เรือนไม้ครัว | เมนูอาหาร</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --coffee: #6F4E37;
+    --coffee-dark: #3E2A1E;
+    --cream: #FFF8E7;
+    --tan: #D2B48C;
+    --rust: #B5651D;
+    --paper: #FFFDF7;
+    --shadow: rgba(62, 42, 30, 0.18);
+  }
+
+  *{ box-sizing: border-box; margin:0; padding:0; }
+
+  body{
+    font-family: 'Kanit', sans-serif;
+    background:
+      radial-gradient(circle at 15% 10%, rgba(210,180,140,0.35), transparent 40%),
+      radial-gradient(circle at 90% 85%, rgba(111,78,55,0.15), transparent 45%),
+      var(--cream);
+    color: var(--coffee-dark);
+    min-height: 100vh;
+    padding-bottom: 60px;
+  }
+
+  /* ===== Header ===== */
+  header{
+    position: relative;
+    background: linear-gradient(160deg, var(--coffee) 0%, var(--coffee-dark) 100%);
+    color: var(--cream);
+    padding: 56px 24px 72px;
+    text-align: center;
+    overflow: hidden;
+  }
+
+  header::before{
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.03) 0 2px, transparent 2px 12px);
+    pointer-events: none;
+  }
+
+  .eyebrow{
+    display: inline-block;
+    font-size: 0.75rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--tan);
+    border: 1px solid rgba(210,180,140,0.5);
+    padding: 6px 16px;
+    border-radius: 999px;
+    margin-bottom: 18px;
+  }
+
+  header h1{
+    font-size: clamp(2.1rem, 5vw, 3rem);
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+
+  header p.tagline{
+    margin-top: 10px;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--tan);
+    font-size: 1.05rem;
+  }
+
+  /* wavy bottom edge like a menu card */
+  .wave{
+    position: absolute;
+    left: 0; right: 0; bottom: -1px;
+    height: 34px;
+    background:
+      radial-gradient(circle at 10px 0, transparent 12px, var(--cream) 13px) 0 0 / 24px 24px repeat-x;
+  }
+
+  /* ===== Filter Bar ===== */
+  .filter-bar{
+    max-width: 900px;
+    margin: -34px auto 44px;
+    position: relative;
+    z-index: 2;
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding: 0 20px;
+  }
+
+  .filter-btn{
+    font-family: 'Kanit', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--coffee);
+    background: var(--paper);
+    border: 2px solid var(--tan);
+    padding: 10px 26px;
+    border-radius: 999px;
+    cursor: pointer;
+    box-shadow: 0 4px 10px var(--shadow);
+    transition: all 0.25s ease;
+    letter-spacing: 0.02em;
+  }
+
+  .filter-btn:hover{
+    border-color: var(--coffee);
+    transform: translateY(-2px);
+  }
+
+  .filter-btn.active{
+    background: var(--coffee);
+    border-color: var(--coffee-dark);
+    color: var(--cream);
+    box-shadow: 0 6px 14px var(--shadow);
+  }
+
+  /* ===== Menu Grid ===== */
+  .menu-section{
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  .menu-grid{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+  }
+
+  @media (max-width: 980px){
+    .menu-grid{ grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 620px){
+    .menu-grid{ grid-template-columns: 1fr; }
+  }
+
+  .menu-card{
+    background: var(--paper);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 20px var(--shadow);
+    border: 1px solid rgba(210,180,140,0.5);
+    transition: opacity 0.35s ease, transform 0.35s ease, box-shadow 0.25s ease;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .menu-card:hover{
+    transform: translateY(-6px);
+    box-shadow: 0 14px 26px var(--shadow);
+  }
+
+  .menu-card.fade-out{
+    opacity: 0;
+    transform: scale(0.94);
+  }
+
+  .menu-card.is-hidden{
+    display: none;
+  }
+
+  .card-image{
+    position: relative;
+    width: 100%;
+    height: 180px;
+    max-width: 250px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3.4rem;
+    background: linear-gradient(135deg, var(--tan) 0%, var(--coffee) 100%);
+    color: var(--cream);
+  }
+
+  .card-image .cat-tag{
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 0.68rem;
+    background: rgba(62,42,30,0.75);
+    color: var(--cream);
+    padding: 3px 10px;
+    border-radius: 999px;
+    letter-spacing: 0.03em;
+  }
+
+  .card-body{
+    padding: 18px 20px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+  }
+
+  .card-body h3{
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--coffee-dark);
+  }
+
+  .card-body .desc{
+    font-size: 0.85rem;
+    font-weight: 300;
+    color: #6b5847;
+    line-height: 1.5;
+    flex: 1;
+  }
+
+  .price-row{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 6px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--tan);
+  }
+
+  .price{
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--rust);
+  }
+
+  .price::after{
+    content: " ฿";
+    font-size: 0.9rem;
+  }
+
+  .qty-badge{
+    font-size: 0.7rem;
+    font-weight: 400;
+    color: var(--coffee);
+    background: var(--tan);
+    padding: 3px 10px;
+    border-radius: 999px;
+  }
+
+  footer{
+    text-align: center;
+    margin-top: 60px;
+    font-size: 0.8rem;
+    color: var(--coffee);
+    opacity: 0.7;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <span class="eyebrow">Since 2018 &middot; ครัวไทยแท้</span>
+  <h1>เรือนไม้ครัว</h1>
+  <p class="tagline">รสชาติบ้าน ๆ ที่ปรุงด้วยใจ เสิร์ฟทุกจานด้วยความอบอุ่น</p>
+  <div class="wave"></div>
+</header>
+
+<div class="filter-bar">
+  <button class="filter-btn active" data-filter="all">ทั้งหมด</button>
+  <button class="filter-btn" data-filter="main">อาหารหลัก</button>
+  <button class="filter-btn" data-filter="drink">เครื่องดื่ม</button>
+</div>
+
+<main class="menu-section">
+  <div class="menu-grid" id="menuGrid">
+
+    <div class="menu-card" data-category="main">
+      <div class="card-image"><span class="cat-tag">อาหารหลัก</span>🍤</div>
+      <div class="card-body">
+        <h3>ผัดไทยกุ้งสด</h3>
+        <p class="desc">เส้นจันท์ผัดซอสมะขามรสเปรี้ยวหวานกำลังดี คลุกเคล้ากับกุ้งแม่น้ำตัวโต ถั่วงอกกรอบ และถั่วลิสงป่น</p>
+        <div class="price-row">
+          <span class="price">89</span>
+          <span class="qty-badge">เมนูขายดี</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="menu-card" data-category="main">
+      <div class="card-image"><span class="cat-tag">อาหารหลัก</span>🦀</div>
+      <div class="card-body">
+        <h3>ข้าวผัดปูใบโหระพา</h3>
+        <p class="desc">ข้าวหอมมะลิผัดกับเนื้อปูก้อนแท้ ใบโหระพาหอมกรุ่น เสิร์ฟพร้อมแตงกวาและมะนาวสด</p>
+        <div class="price-row">
+          <span class="price">95</span>
+          <span class="qty-badge">แนะนำ</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="menu-card" data-category="main">
+      <div class="card-image"><span class="cat-tag">อาหารหลัก</span>🍛</div>
+      <div class="card-body">
+        <h3>แกงเขียวหวานไก่</h3>
+        <p class="desc">แกงเขียวหวานสูตรต้นตำรับ เข้มข้นหอมกะทิสด เนื้อไก่นุ่ม มะเขือเปราะ และใบโหระพา</p>
+        <div class="price-row">
+          <span class="price">85</span>
+          <span class="qty-badge">รสเผ็ดกลาง</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="menu-card" data-category="drink">
+      <div class="card-image"><span class="cat-tag">เครื่องดื่ม</span>🧋</div>
+      <div class="card-body">
+        <h3>ชาไทยเย็น</h3>
+        <p class="desc">ชาไทยต้นตำรับชงเข้มข้น ราดนมสดหวานมัน เสิร์ฟเย็นฉ่ำ ดับร้อนได้ทุกฤดู</p>
+        <div class="price-row">
+          <span class="price">45</span>
+          <span class="qty-badge">ยอดนิยม</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="menu-card" data-category="drink">
+      <div class="card-image"><span class="cat-tag">เครื่องดื่ม</span>☕</div>
+      <div class="card-body">
+        <h3>กาแฟดำเย็น</h3>
+        <p class="desc">กาแฟคั่วกลางกลิ่นหอม ชงสดใหม่ทุกแก้ว รสชาติเข้มกำลังดี ไม่ใส่น้ำตาล</p>
+        <div class="price-row">
+          <span class="price">40</span>
+          <span class="qty-badge">ไม่มีน้ำตาล</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="menu-card" data-category="drink">
+      <div class="card-image"><span class="cat-tag">เครื่องดื่ม</span>🍋</div>
+      <div class="card-body">
+        <h3>น้ำมะนาวโซดา</h3>
+        <p class="desc">น้ำมะนาวสดคั้นเอง ผสมโซดาซ่า ๆ ชื่นใจ เปรี้ยวหวานกำลังดี</p>
+        <div class="price-row">
+          <span class="price">40</span>
+          <span class="qty-badge">สดชื่น</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer>เรือนไม้ครัว &middot; เปิดทุกวัน 10:00 - 21:00 น.</footer>
+
+<script>
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  const cards = document.querySelectorAll('.menu-card');
+
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const filter = btn.dataset.filter;
+
+      cards.forEach(card => {
+        const matches = filter === 'all' || card.dataset.category === filter;
+
+        if (matches) {
+          card.classList.remove('is-hidden');
+          // allow display to apply before removing fade-out for a smooth transition
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => card.classList.remove('fade-out'));
+          });
+        } else {
+          card.classList.add('fade-out');
+          card.addEventListener('transitionend', function hideAfterFade(e){
+            if (e.propertyName === 'opacity' && card.classList.contains('fade-out')){
+              card.classList.add('is-hidden');
+              card.removeEventListener('transitionend', hideAfterFade);
+            }
+          });
+        }
+      });
+    });
+  });
+</script>
+
+</body>
+</html>
